@@ -68,6 +68,11 @@ public class BloodOrb {
             if (isShapeless) iRecipe = new ShapelessBloodOrbRecipe(output, recipe);
             else iRecipe = new ShapedBloodOrbRecipe(output, recipe);
             CraftingManager.getInstance().getRecipeList().add(iRecipe);
+            MineTweakerIntegration.info(
+                    "GameRegistry.addRecipe(new ShapedBloodOrbRecipe(" + MineTweakerIntegration.convertStack(output)
+                            + ", "
+                            + MineTweakerIntegration.convertArrayInLine(recipe)
+                            + "));");
         }
 
         @Override
@@ -121,6 +126,7 @@ public class BloodOrb {
                 }
             }
             CraftingManager.getInstance().getRecipeList().remove(iRecipe);
+            throw new RuntimeException("E");
         }
 
         @Override

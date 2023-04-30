@@ -36,6 +36,15 @@ public class Alchemy {
         @Override
         public void apply() {
             AlchemyRecipeRegistry.recipes.add(recipe);
+            MineTweakerIntegration.info(
+                    "AlchemyRecipeRegistry.registerRecipe(" + MineTweakerIntegration.convertStack(recipe.getResult())
+                            + ", "
+                            + recipe.getAmountNeeded()
+                            + ", new ItemStack[] { "
+                            + MineTweakerIntegration.convertArrayInLine(recipe.getRecipe())
+                            + " }, "
+                            + recipe.getOrbLevel()
+                            + ");");
         }
 
         @Override
@@ -88,6 +97,9 @@ public class Alchemy {
             }
 
             AlchemyRecipeRegistry.recipes.remove(recipe);
+
+            MineTweakerIntegration
+                    .info("BloodMagicHelper.removeAlchemyRecipe(" + MineTweakerIntegration.convertStack(output) + ");");
         }
 
         @Override

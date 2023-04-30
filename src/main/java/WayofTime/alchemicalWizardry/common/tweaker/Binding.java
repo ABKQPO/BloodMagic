@@ -34,6 +34,11 @@ public class Binding {
         @Override
         public void apply() {
             BindingRegistry.bindingRecipes.add(recipe);
+            MineTweakerIntegration.info(
+                    "BindingRegistry.registerRecipe(" + MineTweakerIntegration.convertStack(recipe.outputItem)
+                            + ", "
+                            + MineTweakerIntegration.convertStack(recipe.requiredItem)
+                            + ");");
         }
 
         @Override
@@ -86,6 +91,9 @@ public class Binding {
             }
 
             BindingRegistry.bindingRecipes.remove(recipe);
+
+            MineTweakerIntegration
+                    .info("BloodMagicHelper.removeBindingRecipe(" + MineTweakerIntegration.convertStack(output) + ");");
         }
 
         @Override

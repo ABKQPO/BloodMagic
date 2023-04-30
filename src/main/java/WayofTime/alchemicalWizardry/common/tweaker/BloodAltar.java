@@ -39,6 +39,21 @@ public class BloodAltar {
         @Override
         public void apply() {
             AltarRecipeRegistry.altarRecipes.add(recipe);
+            MineTweakerIntegration.info(
+                    "AltarRecipeRegistry.registerAltarRecipe(" + MineTweakerIntegration.convertStack(recipe.result)
+                            + ", "
+                            + MineTweakerIntegration.convertStack(recipe.requiredItem)
+                            + ", "
+                            + recipe.minTier
+                            + ", "
+                            + recipe.liquidRequired
+                            + ", "
+                            + recipe.consumptionRate
+                            + ", "
+                            + recipe.drainRate
+                            + ", "
+                            + (recipe.canBeFilled ? "true" : "false")
+                            + ");");
         }
 
         @Override
@@ -91,6 +106,9 @@ public class BloodAltar {
             }
 
             AltarRecipeRegistry.altarRecipes.remove(recipe);
+
+            MineTweakerIntegration
+                    .info("BloodMagicHelper.removeAltarRecipe(" + MineTweakerIntegration.convertStack(output) + ");");
         }
 
         @Override
