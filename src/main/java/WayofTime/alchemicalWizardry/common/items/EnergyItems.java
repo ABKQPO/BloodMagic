@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.items;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -23,11 +22,16 @@ public class EnergyItems extends Item implements IBindable {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
     }
 
-    protected void setEnergyUsed(int par1int) {
+    public void setEnergyUsed(int par1int) {
         this.energyUsed = par1int;
     }
 
-    protected int getEnergyUsed() {
+    public int getEnergyUsed() {
+        return this.energyUsed;
+    }
+
+    @Override
+    public int drainCost() {
         return this.energyUsed;
     }
 
@@ -90,9 +94,9 @@ public class EnergyItems extends Item implements IBindable {
                         posY,
                         posZ);
                 world.playSoundEffect(
-                        (double) ((float) player.posX + 0.5F),
-                        (double) ((float) player.posY + 0.5F),
-                        (double) ((float) player.posZ + 0.5F),
+                        ((float) player.posX + 0.5F),
+                        ((float) player.posY + 0.5F),
+                        ((float) player.posZ + 0.5F),
                         "random.fizz",
                         0.5F,
                         2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -129,25 +133,26 @@ public class EnergyItems extends Item implements IBindable {
     }
 
     public static boolean canSyphonInContainer(ItemStack ist, int damageToBeDone) {
-        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").equals(""))) {
-            String ownerName = ist.getTagCompound().getString("ownerName");
-
-            if (MinecraftServer.getServer() == null) {
-                return false;
-            }
-
-            World world = MinecraftServer.getServer().worldServers[0];
-            LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
-
-            if (data == null) {
-                data = new LifeEssenceNetwork(ownerName);
-                world.setItemData(ownerName, data);
-            }
-
-            return data.currentEssence >= damageToBeDone;
+        if (!(ist.getItem() instanceof IBindable)) {
+            return false;
         }
 
-        return false;
+        String ownerName = IBindable.getOwnerName(ist);
+        MinecraftServer server = MinecraftServer.getServer();
+
+        if (ownerName.isEmpty() || server == null) {
+            return false;
+        }
+
+        World world = server.worldServers[0];
+        LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
+
+        if (data == null) {
+            data = new LifeEssenceNetwork(ownerName);
+            world.setItemData(ownerName, data);
+        }
+
+        return data.currentEssence >= damageToBeDone;
     }
 
     public static void hurtPlayer(EntityPlayer user, int energySyphoned) {
@@ -181,35 +186,28 @@ public class EnergyItems extends Item implements IBindable {
         return true;
     }
 
-    // Global static methods
+    // Used by some addon mods like Blood Arsenal
+    @Deprecated
     public static boolean checkAndSetItemOwner(ItemStack item, EntityPlayer player) {
-        return !SpellHelper.isFakePlayer(player) && SoulNetworkHandler.checkAndSetItemPlayer(item, player);
+        return IBindable.checkAndSetItemOwner(item, player);
     }
 
+    // Used by some addon mods like Blood Arsenal
+    @Deprecated
     public static void setItemOwner(ItemStack item, String ownerName) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        item.getTagCompound().setString("ownerName", ownerName);
+        IBindable.setItemOwner(item, ownerName);
     }
 
+    // Used by some addon mods like Blood Arsenal
+    @Deprecated
     public static void checkAndSetItemOwner(ItemStack item, String ownerName) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        if (item.getTagCompound().getString("ownerName").equals("")) {
-            item.getTagCompound().setString("ownerName", ownerName);
-        }
+        IBindable.checkAndSetItemOwner(item, ownerName);
     }
 
+    // Used by some addon mods like Blood Arsenal
+    @Deprecated
     public static String getOwnerName(ItemStack item) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        return item.getTagCompound().getString("ownerName");
+        return IBindable.getOwnerName(item);
     }
 
     @Deprecated

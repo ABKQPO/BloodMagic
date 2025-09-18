@@ -277,6 +277,7 @@ import WayofTime.alchemicalWizardry.common.tileEntity.TEWritingTable;
 import WayofTime.alchemicalWizardry.common.tileEntity.gui.GuiHandler;
 import WayofTime.alchemicalWizardry.common.tweaker.MineTweakerIntegration;
 import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
+import WayofTime.alchemicalWizardry.compat.structurelib.CompatStructureLib;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -493,13 +494,20 @@ public class AlchemicalWizardry {
     public static boolean causeHungerWithRegen;
     public static boolean causeHungerChatMessage = true;
     public static boolean disableBoundToolsRightClick;
+    public static boolean allowPotionRepair;
 
-    public static BlockStack[] secondTierRunes = new BlockStack[10];
-    public static BlockStack[] thirdTierRunes = new BlockStack[10];
-    public static BlockStack[] fourthTierRunes = new BlockStack[10];
-    public static BlockStack[] fifthTierRunes = new BlockStack[10];
-    public static BlockStack[] sixthTierRunes = new BlockStack[10];
-    public static BlockStack[] specialAltarBlock = new BlockStack[7];
+    public static List<BlockStack> secondTierRunes;
+    public static List<BlockStack> thirdTierRunes;
+    public static List<BlockStack> fourthTierRunes;
+    public static List<BlockStack> fifthTierRunes;
+    public static List<BlockStack> sixthTierRunes;
+    public static List<BlockStack> fifthTierBeacons;
+    public static List<BlockStack> thirdTierCaps;
+    public static List<BlockStack> thirdTierPillars;
+    public static List<BlockStack> fourthTierCaps;
+    public static List<BlockStack> fourthTierPillars;
+    public static List<BlockStack> sixthTierCaps;
+    public static List<BlockStack> sixthTierPillars;
 
     public static int lpPerSelfSacrifice = 200;
     public static int lpPerSelfSacrificeSoulFray = 20;
@@ -3330,6 +3338,10 @@ public class AlchemicalWizardry {
         isPneumaticCraftLoaded = Loader.isModLoaded("PneumaticCraft");
         isFMPLoaded = Loader.isModLoaded("ForgeMultipart");
         isChiselLoaded = Loader.isModLoaded("chisel");
+
+        if (Loader.isModLoaded("structurelib")) {
+            CompatStructureLib.init();
+        }
 
         BloodMagicConfiguration.loadBlacklist();
         BloodMagicConfiguration.blacklistRituals();
